@@ -184,14 +184,14 @@ sudo -u www-data touch /var/log/phplist/errors.log
 #cretae datatbase
 
 sudo mysql <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD($DB_PASSWORD);
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('Strong*1Password');
 exit
 EOF
 
 mysql_secure_installation --password=$DB_PASSWORD
 mysql --user=root --password=$DB_PASSWORD <<EOF
 CREATE DATABASE phplist;
-GRANT ALL PRIVILEGES ON phplist.* TO 'phplist'@'localhost' IDENTIFIED BY $DB_PASSWORD;
+GRANT ALL PRIVILEGES ON phplist.* TO 'phplist'@'localhost' IDENTIFIED BY 'Strong*1Password';
 FLUSH PRIVILEGES;
 exit
 EOF
