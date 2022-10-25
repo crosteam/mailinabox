@@ -95,7 +95,7 @@ cat > $RCM_CONFIG <<EOF;
 // if you have an SMTP server, set it here. Otherwise it will use the normal php mail() function
 //# if your SMTP server is called "smtp.mydomain.com" you enter this below like this:
 //#
-//#     define("PHPMAILERHOST",'smtp.mydomain.com');
+//#     define("PHPMAILERHOST",$PRIMARY_HOSTNAME);
 
 define('PHPMAILERHOST', '');
 
@@ -103,7 +103,7 @@ define('PHPMAILERHOST', '');
 // this is here, to make sure you edited the config file and mails are not sent "accidentally"
 // on unmanaged systems
 
-define('TEST', 1);
+define('TEST', 0);
 /*
 ==============================================================================================================
 *
@@ -122,7 +122,7 @@ define('TEST', 1);
 // Your should make this an address that no PERSON reads
 // but a mailbox that phpList can empty every so often, to process the bounces
 
-// \$message_envelope = 'listbounces@yourdomain';
+// \$message_envelope = 'listbounces@afroware.ma';
 
 // Handling bounces. Check README.bounces for more info
 // This can be 'pop' or 'mbox'
