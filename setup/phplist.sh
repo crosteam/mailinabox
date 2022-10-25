@@ -14,8 +14,9 @@ source /etc/mailinabox.conf # load global vars
 
 # These dependencies are from `apt-cache showpkg phplist-core`.
 echo "Installing phplist (subscriber)..."
+sudo apt purge mariadb*
 apt_install \
-	php-net-socket php${PHP_VER}-gd php-xml-util \
+	php-net-socket php${PHP_VER}-gd php${PHP_VER}-mysql php-xml-util \
 	php${PHP_VER}-gettext php${PHP_VER}-bcmath mariadb-server
 # Install phplist from source if it is not already present or if it is out of date.
 # Combine the phplist version number with the commit hash of plugins to track
@@ -27,8 +28,8 @@ VERSION=3.6.10
 HASH=8c3ef484fbdbeed6c13b79f238629bd93ececb77
 # paths that are often reused.
 RCM_DIR=/usr/local/lib/phplist
-RCM_PLUGIN_DIR=${RCM_DIR}/plugins
 RCM_CONFIG=${RCM_DIR}/config/config.php
+DB_PASSWORD='Strong*1Password'
 
 needs_update=0 #NODOC
 if [ ! -f /usr/local/lib/phplist/version ]; then
@@ -89,7 +90,7 @@ cat > $RCM_CONFIG <<EOF;
 \$database_user = 'phplist';
 
 // and what is the password to login to control the database
-\$database_password = 'phplist';
+\$database_password = $DB_PASSWORD;
 
 // if you have an SMTP server, set it here. Otherwise it will use the normal php mail() function
 //# if your SMTP server is called "smtp.mydomain.com" you enter this below like this:
@@ -174,8 +175,8 @@ EOF
 
 
 # Create writable directories.
-mkdir -p /var/log/phplist /var/tmp/phplist $STORAGE_ROOT/mail/phplist
-chown -R www-data.www-data /var/log/phplist /var/tmp/phplist $STORAGE_ROOT/mail/phplist
+mkdir -p /var/log/phplist /var/tmp/phplist
+chown -R www-data.www-data /var/log/phplist /var/tmp/phplist
 
 # Ensure the log file monitored by fail2ban exists, or else fail2ban can't start.
 sudo -u www-data touch /var/log/phplist/errors.log
@@ -183,15 +184,14 @@ sudo -u www-data touch /var/log/phplist/errors.log
 #cretae datatbase
 
 sudo mysql <<EOF
-ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('Strong*1Password');
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD($DB_PASSWORD);
 exit
 EOF
 
-sudo mysql_secure_installation --password=Strong*1Password
-sudo mysql -u root -p <<EOF
-Strong*1Password
+mysql_secure_installation --password=$DB_PASSWORD
+mysql --user=root --password=$DB_PASSWORD <<EOF
 CREATE DATABASE phplist;
-GRANT ALL ON phplist.* TO 'phplist'@'localhost' USING PASSWORD('Strong*1Password'");
+GRANT ALL PRIVILEGES ON phplist.* TO 'phplist'@'localhost' IDENTIFIED BY $DB_PASSWORD;
 FLUSH PRIVILEGES;
-exist
+exit
 EOF
