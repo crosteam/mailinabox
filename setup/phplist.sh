@@ -90,7 +90,7 @@ cat > $RCM_CONFIG <<EOF;
 \$database_user = 'phplist';
 
 // and what is the password to login to control the database
-\$database_password = $DB_PASSWORD;
+\$database_password = ''$DB_PASSWORD';
 
 // if you have an SMTP server, set it here. Otherwise it will use the normal php mail() function
 //# if your SMTP server is called "smtp.mydomain.com" you enter this below like this:
@@ -190,8 +190,8 @@ EOF
 
 mysql_secure_installation --password=$DB_PASSWORD
 mysql --user=root --password=$DB_PASSWORD <<EOF
-CREATE DATABASE phplist;
-GRANT ALL PRIVILEGES ON phplist.* TO 'phplist'@'localhost' IDENTIFIED BY 'Strong*1Password';
+CREATE DATABASE phplistdb;
+GRANT ALL PRIVILEGES ON phplistdb.* TO 'phplist'@'localhost' IDENTIFIED BY 'Strong*1Password';
 FLUSH PRIVILEGES;
 exit
 EOF
