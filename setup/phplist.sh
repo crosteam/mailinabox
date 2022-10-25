@@ -24,7 +24,7 @@ apt_install \
 #   https://github.com/phplist/phplist/releases
 
 VERSION=v3.6.10
-
+HASH=8c3ef484fbdbeed6c13b79f238629bd93ececb77
 # paths that are often reused.
 RCM_DIR=/usr/local/lib/phplist
 RCM_PLUGIN_DIR=${RCM_DIR}/plugins
@@ -49,7 +49,7 @@ if [ $needs_update == 1 ]; then
 		/tmp/phpList.tgz
 	tar -C /usr/local/lib --no-same-owner -zxf /tmp/phpList.tgz
 	rm -rf /usr/local/lib/phplist
-	mv /usr/local/lib/phplist-$VERSION/ $RCM_DIR
+	mv /usr/local/lib/phplist-$VERSION/public_html/lists $RCM_DIR
 	rm -f /tmp/phpList.tgz
 
 
@@ -187,6 +187,6 @@ sudo -u www-data touch /var/log/phplist/errors.log
 
 #cretae datatbase
 
-sudo mysql_secure_installation
+sudo mysql_secure_installation --password='StrongPassword'
 
 python3 phplistdb.py
