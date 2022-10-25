@@ -7,8 +7,8 @@
 redoc-cli bundle ../mailinabox.yml \
   -t template.hbs \
   -o api-docs.html \
-  --templateOptions.metaDescription="Mail-in-a-Box HTTP API" \
-  --title="Mail-in-a-Box HTTP API" \
+  --templateOptions.metaDescription="Crossteam CRM Suite HTTP API" \
+  --title="Crossteam CRM Suite HTTP API" \
   --options.expandSingleSchemaField \
   --options.hideSingleRequestSampleTab \
   --options.jsonSampleExpandLevel=10 \

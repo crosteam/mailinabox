@@ -17,11 +17,11 @@ if [ -z "${NONINTERACTIVE:-}" ]; then
 	# so we install the python package globally.
 	hide_output pip3 install "email_validator>=1.0.0" || exit 1
 
-	message_box "Mail-in-a-Box Installation" \
-		"Hello and thanks for deploying a Mail-in-a-Box!
+	message_box "Crossteam Suite Installation" \
+		"Hello and thanks for deploying a Crossteam Suite!
 		\n\nI'm going to ask you a few questions.
 		\n\nTo change your answers later, just run 'sudo mailinabox' from the command line.
-		\n\nNOTE: You should only install this on a brand new Ubuntu installation 100% dedicated to Mail-in-a-Box. Mail-in-a-Box will, for example, remove apache2."
+		\n\nNOTE: You should only install this on a brand new Ubuntu installation 100% dedicated to Crossteam Suite. Crossteam Suite will, for example, remove apache2."
 fi
 
 # The box needs a name.
