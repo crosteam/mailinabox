@@ -15,15 +15,15 @@ source /etc/mailinabox.conf # load global vars
 # These dependencies are from `apt-cache showpkg phplist-core`.
 echo "Installing phplist (subscriber)..."
 apt_install \
-	php${PHP_VER}-net-socket php${PHP_VER}-gd php${PHP_VER}-xml-util \
-	php${PHP_VER}-gettext php${PHP_VER}-bcmath mysql-server
+	php-net-socket php${PHP_VER}-gd php-xml-util \
+	php${PHP_VER}-gettext php${PHP_VER}-bcmath mariadb-server
 # Install phplist from source if it is not already present or if it is out of date.
 # Combine the phplist version number with the commit hash of plugins to track
 # whether we have the latest version of everything.
 # For the latest versions, see:
 #   https://github.com/phplist/phplist/releases
 
-VERSION=v3.6.10
+VERSION=3.6.10
 HASH=8c3ef484fbdbeed6c13b79f238629bd93ececb77
 # paths that are often reused.
 RCM_DIR=/usr/local/lib/phplist
@@ -36,20 +36,15 @@ if [ ! -f /usr/local/lib/phplist/version ]; then
 	needs_update=1 #NODOC
 fi
 if [ $needs_update == 1 ]; then
-  # if upgrading from 1.3.x, clear the temp_dir
-  if [ -f /usr/local/lib/phplist/version ]; then
-    if [ "$(cat /usr/local/lib/phplist/version | cut -c1-3)" == '1.3' ]; then
-      find /var/tmp/phplist/ -type f ! -name 'RCMTEMP*' -delete
-    fi
-  fi
 
-	# install roundcube
+	# install phpList
 	wget_verify \
-	https://github.com/phpList/phplist3/archive/refs/tags/$VERSION.tar.gz
+	https://github.com/phpList/phplist3/archive/refs/tags/v$VERSION.tar.gz \
+	$HASH \
 		/tmp/phpList.tgz
 	tar -C /usr/local/lib --no-same-owner -zxf /tmp/phpList.tgz
 	rm -rf /usr/local/lib/phplist
-	mv /usr/local/lib/phplist-$VERSION/public_html/lists $RCM_DIR
+	mv /usr/local/lib/phplist3-$VERSION/public_html/lists $RCM_DIR
 	rm -f /tmp/phpList.tgz
 
 
@@ -148,10 +143,10 @@ define('MANUALLY_PROCESS_BOUNCES', 1);
 // one. To do that, add a # before the first line and take off the one before the
 // second line
 \$bounce_mailbox_port = '110/pop3/notls';
-//$bounce_mailbox_port = "110/pop3";
+// bounce_mailbox_port = "110/pop3";
 
 // it's getting more common to have secure connections, in which case you probably want to use
-//$bounce_mailbox_port = "995/pop3/ssl/novalidate-cert";
+// bounce_mailbox_port = "995/pop3/ssl/novalidate-cert";
 
 // when the protocol is mbox specify this one
 // it needs to be a local file in mbox format, accessible to your webserver user
@@ -187,6 +182,16 @@ sudo -u www-data touch /var/log/phplist/errors.log
 
 #cretae datatbase
 
-sudo mysql_secure_installation --password='StrongPassword'
+sudo mysql <<EOF
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('Strong*1Password');
+exit
+EOF
 
-python3 phplistdb.py
+sudo mysql_secure_installation --password=Strong*1Password
+sudo mysql -u root -p <<EOF
+Strong*1Password
+CREATE DATABASE phplist;
+GRANT ALL ON phplist.* TO 'phplist'@'localhost' USING PASSWORD('Strong*1Password'");
+FLUSH PRIVILEGES;
+exist
+EOF
